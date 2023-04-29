@@ -1,7 +1,13 @@
+// modules which are always there
+
 pub mod win;
-// pub mod vk;
 pub mod mouse;
 pub mod png;
+
+// modules which are only there on condition
+
+#[cfg(feature = "vk")]
+pub mod vk;
 
 // entry point for the KOS
 
