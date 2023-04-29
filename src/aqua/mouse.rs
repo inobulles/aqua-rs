@@ -40,10 +40,7 @@ impl Mouse {
 		let dev = aqua::query_device("aquabsd.alps.mouse");
 		let mouse = aqua::send_device!(dev, 0x646D,);
 
-		Mouse {
-			dev: dev,
-			mouse: mouse,
-		}
+		Mouse { dev, mouse }
 	}
 
 	pub fn update(&mut self) {

@@ -40,12 +40,7 @@ impl VkContext {
 
 		let entry = unsafe { ash::Entry::from_static_fn(static_fn) };
 
-		VkContext {
-			dev: dev,
-			context: context,
-			entry: entry,
-			fp: fp,
-		}
+		VkContext { dev, context, entry, fp }
 	}
 
 	fn get_fn(dev: aqua::Device, context: u64, name: &str) -> u64 {

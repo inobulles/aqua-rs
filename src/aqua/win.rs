@@ -18,13 +18,7 @@ impl Win {
 		let dev = aqua::query_device("aquabsd.alps.win");
 		let win = aqua::send_device!(dev, 0x6377, x_res, y_res);
 
-		Win {
-			dev: dev,
-			win: win,
-
-			x_res: x_res,
-			y_res: y_res,
-		}
+		Win { dev, win, x_res, y_res }
 	}
 
 	pub fn caption(&mut self, name: &str) {

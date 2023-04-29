@@ -18,13 +18,9 @@ impl Png {
 		let dev = aqua::query_device("aquabsd.alps.png");
 
 		let buf = std::fs::read(path).expect("can't open file");
-
 		let png = aqua::send_device!(dev, 0x6C64, buf.as_ptr());
 
-		Png {
-			dev: dev,
-			png: png,
-		}
+		Png { dev, png }
 	}
 
 	pub fn draw(&mut self) -> PngResult {
@@ -46,7 +42,7 @@ impl Png {
 		let buf = unsafe { Vec::from_raw_parts(std::mem::transmute(c_buf), len, len) };
 
 		PngResult {
-			buf: buf,
+			buf,
 
 			bpp: c_bpp as u32,
 			width: c_width as u32,
