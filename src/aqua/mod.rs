@@ -1,3 +1,20 @@
+pub mod win;
+pub mod vk;
+pub mod mouse;
+pub mod png;
+
+// entry point for the KOS
+
+extern {
+	#[link_name="main"]
+	pub fn main();
+}
+
+#[no_mangle]
+pub extern "C" fn __native_entry() {
+	unsafe { main() };
+}
+
 pub type Device = u64;
 
 type KosQueryDevice = fn(u64, u64) -> Device;
@@ -6,11 +23,15 @@ type KosSendDevice = fn(u64, u64, u64, u64) -> u64;
 static mut KOS_QUERY_DEVICE: Option<KosQueryDevice> = None;
 static mut KOS_SEND_DEVICE: Option<KosSendDevice> = None;
 
+// called by the KOS to set query_device & send_device
+
 #[no_mangle]
 pub unsafe extern "C" fn aqua_set_kos_functions(kos_query_device: u64, kos_send_device: u64) {
 	KOS_QUERY_DEVICE = Some(std::mem::transmute(kos_query_device));
 	KOS_SEND_DEVICE = Some(std::mem::transmute(kos_send_device));
 }
+
+// wrappers around C function pointers given to us by the KOS
 
 pub fn query_device(name: &str) -> Device {
 	let c_str = std::ffi::CString::new(name).unwrap();
@@ -26,6 +47,8 @@ pub fn raw_send_device(device: Device, cmd: u16, data: &mut [u64]) -> u64 {
 	}
 }
 
+// wrapper around raw_send_device to make it a little more ergonomic to use
+
 #[macro_export]
 macro_rules! send_device {
 	($device: expr, $cmd: literal, $($data: expr),*) => {
@@ -36,4 +59,4 @@ macro_rules! send_device {
 	};
 }
 
-// pub use ::send_device;
+pub use ::send_device;
