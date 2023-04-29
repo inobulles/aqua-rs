@@ -1,6 +1,6 @@
 [package]
 name = "aqua"
-verison = "0.1.0"
+version = "0.1.0"
 description = "Crate for writing programs for AQUA with Rust."
 authors = [
 	"obiwac <obiwac@gmail.com>",
