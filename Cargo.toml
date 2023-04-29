@@ -8,5 +8,8 @@ authors = [
 ]
 licence = "The AQUA Software License (ASL), v. 1.0"
 
+[dependencies]
+ash = { git = "https://github.com/obiwac/ash-aqua", optional = true }
+
 [features]
-vk = []
+vk = ["ash"]
