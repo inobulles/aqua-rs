@@ -7,3 +7,7 @@ authors = [
 	"alexisloic21 <englebert.alexis@gmail.com>",
 ]
 licence = "The AQUA Software License (ASL), v. 1.0"
+
+[features]
+default = ["loaded", "debug"]
+linked = []
