@@ -1,7 +1,5 @@
-use aqua;
-
 pub struct Png {
-	dev: aqua::Device,
+	dev: ::Device,
 	png: u64,
 }
 
@@ -15,10 +13,10 @@ pub struct PngResult {
 
 impl Png {
 	pub fn from_path(path: &str) -> Png {
-		let dev = aqua::query_device("aquabsd.alps.png");
+		let dev = ::query_device("aquabsd.alps.png");
 
 		let buf = std::fs::read(path).expect("can't open file");
-		let png = aqua::send_device!(dev, 0x6C64, buf.as_ptr());
+		let png = ::send_device!(dev, 0x6C64, buf.as_ptr());
 
 		Png { dev, png }
 	}
@@ -30,7 +28,7 @@ impl Png {
 		let mut c_width = 0u64;
 		let mut c_height = 0u64;
 
-		aqua::send_device!(self.dev, 0x6477, self.png,
+		::send_device!(self.dev, 0x6477, self.png,
 			&mut c_buf as *mut _,
 
 			&mut c_bpp as *mut _,

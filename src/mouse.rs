@@ -1,5 +1,3 @@
-use aqua;
-
 pub enum MouseButton {
 	Left,
 	Right,
@@ -31,28 +29,28 @@ impl MouseAxis {
 }
 
 pub struct Mouse {
-	dev: aqua::Device,
+	dev: ::Device,
 	mouse: u64,
 }
 
 impl Mouse {
 	pub fn default() -> Mouse {
-		let dev = aqua::query_device("aquabsd.alps.mouse");
-		let mouse = aqua::send_device!(dev, 0x646D,);
+		let dev = ::query_device("aquabsd.alps.mouse");
+		let mouse = ::send_device!(dev, 0x646D,);
 
 		Mouse { dev, mouse }
 	}
 
 	pub fn update(&mut self) {
-		aqua::send_device!(self.dev, 0x756D, self.mouse);
+		::send_device!(self.dev, 0x756D, self.mouse);
 	}
 
 	pub fn poll_button(&mut self, button: MouseButton) -> bool {
-		aqua::send_device!(self.dev, 0x7062, self.mouse, button.to_c()) != 0
+		::send_device!(self.dev, 0x7062, self.mouse, button.to_c()) != 0
 	}
 
 	pub fn poll_axis(&mut self, axis: MouseAxis) -> f32 {
-		let raw = aqua::send_device!(self.dev, 0x7061, self.mouse, axis.to_c());
+		let raw = ::send_device!(self.dev, 0x7061, self.mouse, axis.to_c());
 		unsafe { std::mem::transmute(raw as u32) }
 	}
 }

@@ -1,7 +1,5 @@
 extern crate ash;
 
-use aqua;
-
 pub enum VkContextKind {
 	Win
 }
@@ -15,19 +13,19 @@ impl VkContextKind {
 }
 
 pub struct VkContext {
-	dev: aqua::Device,
+	dev: ::Device,
 	context: u64,
 	entry: ash::Entry,
 	fp: ash::vk::PFN_vkGetInstanceProcAddr,
 }
 
 impl VkContext {
-	pub fn new(win: &aqua::win::Win, name: &str, ver_major: u32, ver_minor: u32, ver_patch: u32) -> VkContext {
+	pub fn new(win: &::win::Win, name: &str, ver_major: u32, ver_minor: u32, ver_patch: u32) -> VkContext {
 		let kind = VkContextKind::Win;
 		let c_str = std::ffi::CString::new(name).unwrap();
 
-		let dev = aqua::query_device("aquabsd.alps.vk");
-		let context = aqua::send_device!(dev, 0x6363, kind.to_device_arg(), win.win, c_str.as_ptr(), ver_major, ver_minor, ver_patch);
+		let dev = ::query_device("aquabsd.alps.vk");
+		let context = ::send_device!(dev, 0x6363, kind.to_device_arg(), win.win, c_str.as_ptr(), ver_major, ver_minor, ver_patch);
 
 		// TODO check for failures
 
@@ -43,13 +41,13 @@ impl VkContext {
 		VkContext { dev, context, entry, fp }
 	}
 
-	fn get_fn(dev: aqua::Device, context: u64, name: &str) -> u64 {
+	fn get_fn(dev: ::Device, context: u64, name: &str) -> u64 {
 		let c_str = std::ffi::CString::new(name).unwrap();
-		aqua::send_device!(dev, 0x6766, context, c_str.as_ptr())
+		::send_device!(dev, 0x6766, context, c_str.as_ptr())
 	}
 
-	unsafe fn get_vk_instance(dev: aqua::Device, context: u64) -> ash::vk::Instance {
-		let instance_addr = aqua::send_device!(dev, 0x6769, context);
+	unsafe fn get_vk_instance(dev: ::Device, context: u64) -> ash::vk::Instance {
+		let instance_addr = ::send_device!(dev, 0x6769, context);
 		std::mem::transmute(instance_addr)
 	}
 
@@ -62,8 +60,8 @@ impl VkContext {
 		unsafe { ash::Instance::load(&static_fn, instance) }
 	}
 
-	unsafe fn get_vk_device(dev: aqua::Device, context: u64) -> ash::vk::Device {
-		let addr = aqua::send_device!(dev, 0x6763, context);
+	unsafe fn get_vk_device(dev: ::Device, context: u64) -> ash::vk::Device {
+		let addr = ::send_device!(dev, 0x6763, context);
 		std::mem::transmute(addr)
 	}
 
@@ -75,7 +73,7 @@ impl VkContext {
 	}
 
 	pub fn get_phys_device(&mut self) -> ash::vk::PhysicalDevice {
-		let addr = aqua::send_device!(self.dev, 0x6770, self.context);
+		let addr = ::send_device!(self.dev, 0x6770, self.context);
 		unsafe { *std::mem::transmute::<u64, *const ash::vk::PhysicalDevice>(addr) }
 	}
 
@@ -85,22 +83,22 @@ impl VkContext {
 	}
 
 	pub fn get_surface_khr(&mut self) -> ash::vk::SurfaceKHR {
-		let addr = aqua::send_device!(self.dev, 0x6773, self.context);
+		let addr = ::send_device!(self.dev, 0x6773, self.context);
 		unsafe { *std::mem::transmute::<u64, *const ash::vk::SurfaceKHR>(addr) }
 	}
 
 	pub fn get_graphics_queue(&mut self) -> u32 {
-		aqua::send_device!(self.dev, 0x6771, self.context) as u32
+		::send_device!(self.dev, 0x6771, self.context) as u32
 	}
 
 	pub fn get_present_queue(&mut self) -> u32 {
-		aqua::send_device!(self.dev, 0x7071, self.context) as u32
+		::send_device!(self.dev, 0x7071, self.context) as u32
 	}
 
 }
 
 impl Drop for VkContext {
 	fn drop(&mut self) {
-		aqua::send_device!(self.dev, 0x6364, self.context);
+		::send_device!(self.dev, 0x6364, self.context);
 	}
 }
