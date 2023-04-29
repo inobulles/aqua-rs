@@ -1,0 +1,9 @@
+[package]
+name = "aqua"
+verison = "0.1.0"
+description = "Crate for writing programs for AQUA with Rust."
+authors = [
+	"obiwac <obiwac@gmail.com>",
+	"alexisloic21 <englebert.alexis@gmail.com>",
+]
+licence = "The AQUA Software License (ASL), v. 1.0"
