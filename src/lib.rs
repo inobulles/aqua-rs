@@ -57,10 +57,10 @@ pub fn raw_send_device(device: Device, cmd: u16, data: &mut [u64]) -> u64 {
 
 #[macro_export]
 macro_rules! send_device {
-	($device: expr, $cmd: literal, $($data: expr),*) => {
+	($device: expr, $cmd: expr, $($data: expr),*) => {
 		(|| -> u64 {
 			let mut data = [$($data as u64),*];
-			::raw_send_device($device, $cmd, &mut data)
+			::raw_send_device($device, $cmd as u16, &mut data)
 		})()
 	};
 }
